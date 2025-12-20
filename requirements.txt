@@ -13,7 +13,8 @@ numpy>=1.24.0
 yfinance>=0.2.0
 
 # Google Gemini API (Primary)
-google-generativeai>=0.3.0
+google-genai>=0.3.0
+google-generativeai>=0.3.0  # 回退支援
 
 # OpenAI API (Optional/Backup)
 openai>=1.0.0

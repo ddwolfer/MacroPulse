@@ -207,9 +207,155 @@ with open('.env.example', 'r', encoding='utf-8') as f:
 #### 5. 後續行動
 
 - ✅ 所有配置檔案已更新
-- ⏳ Phase 2 開發時需實作 Gemini API 調用邏輯
-- ⏳ 建立 `src/agents/base_agent.py` 時需支援雙 LLM 切換
-- ⏳ 測試 Gemini Flash 在經濟分析任務的表現
+- ✅ Phase 2 Gemini API 調用邏輯已完成
+- ✅ `src/agents/base_agent.py` 已實作並支援雙 LLM 架構（新舊 Gemini API 兼容）
+- ✅ 測試通過：BaseAgent 成功調用 Gemini Flash
+
+---
+
+### [ERROR-003] Google Gemini API 棄用警告 (FutureWarning)
+
+**發生時間**：2024-12-20  
+**發生位置**：`src/agents/base_agent.py`  
+**錯誤類型**：API 版本過時警告
+
+#### 1. 錯誤訊息
+
+```
+FutureWarning: All support for the `google.generativeai` package has ended. 
+It will no longer be receiving updates or bug fixes. 
+Please switch to the `google.genai` package as soon as possible.
+```
+
+執行測試時出現此警告，提示舊版 `google.generativeai` 已停止支援。
+
+#### 2. 根本原因 (Root Cause)
+
+Google 已推出新版 Gemini SDK (`google.genai`)，舊版 `google.generativeai` 已進入棄用階段：
+
+**技術細節**：
+- 舊版：`google-generativeai` 套件
+- 新版：`google-genai` 套件
+- API 結構差異：
+  - 舊：`genai.GenerativeModel(model_name).generate_content()`
+  - 新：`client.models.generate_content(model=..., contents=...)`
+
+#### 3. 解決方案
+
+實作新舊版本兼容的 BaseAgent：
+
+```python
+try:
+    from google import genai
+    USE_NEW_GENAI = True
+except ImportError:
+    import google.generativeai as genai
+    USE_NEW_GENAI = False
+
+# 初始化時
+if USE_NEW_GENAI:
+    self.client = genai.Client(api_key=settings.gemini_api_key)
+else:
+    genai.configure(api_key=settings.gemini_api_key)
+    self.model = genai.GenerativeModel(settings.llm_model)
+
+# 調用時
+if USE_NEW_GENAI:
+    response = self.client.models.generate_content(
+        model=settings.llm_model,
+        contents=full_prompt,
+        config={...}
+    )
+else:
+    response = self.model.generate_content(
+        full_prompt,
+        generation_config={...}
+    )
+```
+
+**requirements.txt 更新**：
+```
+google-genai>=0.3.0          # 新版（優先）
+google-generativeai>=0.3.0   # 舊版（回退）
+```
+
+#### 4. 學習點
+
+1. **API 版本管理**：雲端 AI SDK 快速迭代，需要考慮版本兼容
+2. **優雅降級**：優先使用新版 API，無法使用時回退到舊版
+3. **依賴管理**：在 requirements.txt 中同時保留新舊版本，確保不同環境都能運行
+4. **最佳實踐**：
+   - 使用 try-except 處理 import，檢測可用的 API 版本
+   - 在運行時動態選擇 API 版本
+   - 記錄使用的 API 版本到日誌（方便除錯）
+   - 優先使用官方推薦的新版 API
+5. **架構靈活性**：BaseAgent 設計需要考慮不同 LLM 提供商和版本的差異
+
+---
+
+### [ERROR-004] PowerShell 不支援 && 運算符
+
+**發生時間**：2024-12-20  
+**發生位置**：測試腳本執行  
+**錯誤類型**：Shell 語法錯誤
+
+#### 1. 錯誤訊息
+
+```
+錯誤所在行:21 字元:21
++ cd d:\AI\MacroPulse && uv run python test_scripts/test_agents.py
++                     ~~
+意外的 Token '&&'
+```
+
+在 Windows PowerShell 執行包含 `&&` 的命令時發生語法錯誤。
+
+#### 2. 根本原因 (Root Cause)
+
+**Shell 語法差異**：
+- Bash/Zsh (Linux/macOS): 支援 `&&` 運算符（連接命令）
+- PowerShell (Windows): 不支援 `&&`，使用 `;` 或換行分隔命令
+
+**技術細節**：
+- `&&` 在 Bash 中表示「前一個命令成功才執行下一個」
+- PowerShell 使用不同的語法：
+  - `;` - 依序執行
+  - `&& (if)` - 需要用 `if ($?) { ... }` 結構
+
+#### 3. 解決方案
+
+**方案 1：使用分號**（PowerShell 語法）
+```powershell
+cd d:\AI\MacroPulse; uv run python test_scripts/test_agents.py
+```
+
+**方案 2：使用 Git Bash**（跨平台）
+在 Windows 使用 Git Bash 可以支援 Bash 語法。
+
+**方案 3：分別執行命令**
+```powershell
+cd d:\AI\MacroPulse
+uv run python test_scripts/test_agents.py
+```
+
+#### 4. 學習點
+
+1. **跨平台開發注意事項**：
+   - 不同 Shell 的語法差異
+   - Windows: PowerShell, CMD
+   - Linux/macOS: Bash, Zsh
+   
+2. **最佳實踐**：
+   - 文件中提供跨平台的命令範例
+   - 使用工具（如 Make, Task）統一命令介面
+   - 在 CI/CD 中明確指定 Shell 類型
+
+3. **PowerShell 常用語法**：
+   - 連接命令：使用 `;`
+   - 條件執行：`if ($?) { ... }`
+   - 管道：`|` (與 Bash 相同)
+   - 邏輯或：`-or`
+   - 邏輯且：`-and`
 
 ---
 

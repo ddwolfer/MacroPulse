@@ -72,8 +72,13 @@
 
 ## 🧠 第三階段：專業分析 Agent 實作
 
-- [ ] **3.1 基礎 Agent 類別** (`src/agents/base_agent.py`)
-  - [ ] 定義所有 Agent 的共同介面與 LLM 呼叫邏輯。
+- [x] **3.1 基礎 Agent 類別** (`src/agents/base_agent.py`)
+  - [x] 定義所有 Agent 的共同介面與 LLM 呼叫邏輯。
+  - [x] 支援 Gemini API（新舊版本兼容）
+  - [x] Prompt 渲染機制
+  - [x] JSON 解析和修復
+  - [x] 錯誤處理和重試機制
+  - [x] 輸出驗證（Pydantic）
 - [ ] **3.2 貨幣政策 Agent** (`src/agents/fed_agent.py`)
   - [ ] 參考 `Spec_Agent_Fed_Watcher.md` 了解角色定位。
   - [ ] 參考 `SPEC_Prompt_Templates.md` 實作完整的 System Prompt 和 User Prompt。

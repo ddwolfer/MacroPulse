@@ -1,11 +1,12 @@
 """
-專業分析 Agent 層
+專業分析 Agent 模組
 
-各個專業領域的 LLM 分析 Agent：
-- FedAgent (貨幣政策)
-- EconomicAgent (經濟指標)
-- PredictionAgent (預測市場)
-- CorrelationAgent (資產連動)
-- EditorAgent (報告總結)
+包含所有專業領域的分析 Agent。
 """
 
+from src.agents.base_agent import BaseAgent, AgentExecutionError
+
+__all__ = [
+    "BaseAgent",
+    "AgentExecutionError",
+]
