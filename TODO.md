@@ -37,27 +37,38 @@
 - [x] **1.5 文件更新**
   - [x] 更新 `README.md` 為完整的專案介紹。
 
-## 📊 第二階段：數據採集器 (Collectors) 實作
+## 📊 第二階段：數據採集器 (Collectors) 實作（✅ 已完成）
 
-- [ ] **2.1 Polymarket 採集器** (`src/collectors/polymarket_data.py`)
-  - [ ] 參考 `SPEC_API_Integrations.md` 實作 Gamma API 呼叫。
-  - [ ] 參考 `SPEC_Data_Models.md` 定義 `PolymarketMarket` 模型。
-  - [ ] 實作數據過濾（交易量門檻、機率變動計算）。
-  - [ ] 參考 `SPEC_Error_Handling.md` 實作錯誤處理和重試機制。
-- [ ] **2.2 FRED 經濟數據採集器** (`src/collectors/econ_data.py`)
-  - [ ] 參考 `SPEC_API_Integrations.md` 串接 FRED API。
-  - [ ] 參考 `SPEC_Data_Models.md` 定義 `FREDSeries` 模型。
-  - [ ] 抓取 CPI, 失業率, PMI 等指標（參考 `SPEC_API_Integrations.md` 的系列代碼表）。
-  - [ ] 參考 `SPEC_Error_Handling.md` 實作錯誤處理和緩存。
-- [ ] **2.3 金融市場採集器** (`src/collectors/market_data.py`)
-  - [ ] 參考 `SPEC_API_Integrations.md` 使用 `yfinance` 抓取美債殖利率。
-  - [ ] 參考 `SPEC_Data_Models.md` 定義 `TreasuryYield` 和 `AssetPriceHistory` 模型。
-  - [ ] 抓取主要標的 (BTC, ETH, QQQ, SPY, DXY) 價格歷史。
-  - [ ] 實作相關係數計算邏輯。
-- [ ] **2.4 緩存機制實作**
-  - [ ] 參考 `SPEC_Error_Handling.md` 實作 `CacheManager` 類別。
-  - [ ] 實作將原始數據存入 `data_cache/` 的功能，避免重複請求。
-  - [ ] 實作 TTL（Time To Live）機制。
+- [x] **2.1 數據模型定義** (`src/schema/models.py`)
+  - [x] Collector 層模型（Polymarket, FRED, Treasury, Asset）
+  - [x] Agent 輸出模型（Fed, Economic, Prediction, Correlation）
+  - [x] Editor 輸出模型（FinalReport）
+  - [x] 工具模型（UserPortfolio, AgentError）
+- [x] **2.2 基礎採集器** (`src/collectors/base_collector.py`)
+  - [x] HTTP 請求邏輯
+  - [x] 指數退避重試機制
+  - [x] 緩存管理整合
+  - [x] 錯誤處理
+- [x] **2.3 Polymarket 採集器** (`src/collectors/polymarket_data.py`)
+  - [x] Gamma API 呼叫
+  - [x] 數據過濾（交易量門檻）
+  - [x] 緩存機制（TTL: 1 小時）
+- [x] **2.4 FRED 經濟數據採集器** (`src/collectors/fred_data.py`)
+  - [x] FRED API 串接
+  - [x] 多系列並行採集
+  - [x] 緩存機制（TTL: 24 小時）
+- [x] **2.5 金融市場採集器** (`src/collectors/market_data.py`)
+  - [x] yfinance 美債殖利率
+  - [x] 資產價格歷史
+  - [x] 相關係數計算
+  - [x] 用戶持倉支援
+  - [x] 緩存機制（TTL: 15 分鐘）
+- [x] **2.6 測試腳本**
+  - [x] `test_scripts/test_collectors.py`
+- [x] **2.7 主程式整合**
+  - [x] 更新 `main.py` 使用採集器
+  - [x] 並行採集（asyncio.gather）
+  - [x] 異常處理和降級
 
 ## 🧠 第三階段：專業分析 Agent 實作
 

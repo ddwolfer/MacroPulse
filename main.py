@@ -48,18 +48,71 @@ async def collect_data():
     logger.info("階段 1：數據採集")
     logger.info("=" * 60)
     
-    # TODO: 實作數據採集器
-    # from src.collectors.polymarket_data import PolymarketCollector
-    # from src.collectors.fred_data import FREDCollector
-    # from src.collectors.market_data import MarketDataCollector
+    from src.collectors.polymarket_data import PolymarketCollector
+    from src.collectors.fred_data import FREDCollector
+    from src.collectors.market_data import MarketDataCollector
     
-    logger.warning("數據採集器尚未實作，使用模擬數據")
+    # 建立採集器
+    polymarket_collector = PolymarketCollector()
+    fred_collector = FREDCollector()
+    market_collector = MarketDataCollector()
     
-    return {
-        'polymarket': None,
-        'fred': None,
-        'market': None
-    }
+    # 並行採集數據
+    try:
+        logger.info("開始並行採集數據...")
+        
+        # 使用 asyncio.gather 並行執行
+        polymarket_task = polymarket_collector.collect(limit=20)
+        fred_task = fred_collector.collect()
+        treasury_task = market_collector.collect_treasury_yields()
+        asset_task = market_collector.collect_asset_prices(days=7)
+        
+        polymarket_data, fred_data, treasury_yields, asset_prices = await asyncio.gather(
+            polymarket_task,
+            fred_task,
+            treasury_task,
+            asset_task,
+            return_exceptions=True
+        )
+        
+        # 檢查錯誤
+        if isinstance(polymarket_data, Exception):
+            logger.error(f"Polymarket 採集失敗：{str(polymarket_data)}")
+            polymarket_data = []
+        
+        if isinstance(fred_data, Exception):
+            logger.error(f"FRED 採集失敗：{str(fred_data)}")
+            fred_data = {}
+        
+        if isinstance(treasury_yields, Exception):
+            logger.error(f"美債殖利率採集失敗：{str(treasury_yields)}")
+            treasury_yields = []
+        
+        if isinstance(asset_prices, Exception):
+            logger.error(f"資產價格採集失敗：{str(asset_prices)}")
+            asset_prices = {}
+        
+        # 記錄採集結果
+        logger.info(f"✅ Polymarket 市場：{len(polymarket_data)} 個")
+        logger.info(f"✅ FRED 經濟指標：{len(fred_data)} 個系列")
+        logger.info(f"✅ 美債殖利率：{len(treasury_yields)} 個")
+        logger.info(f"✅ 資產價格歷史：{len(asset_prices)} 個")
+        
+        return {
+            'polymarket': polymarket_data,
+            'fred': fred_data,
+            'treasury_yields': treasury_yields,
+            'asset_prices': asset_prices
+        }
+        
+    except Exception as e:
+        logger.error(f"數據採集失敗：{str(e)}", exc_info=True)
+        return {
+            'polymarket': [],
+            'fred': {},
+            'treasury_yields': [],
+            'asset_prices': {}
+        }
 
 
 async def run_analysis(data: dict):
