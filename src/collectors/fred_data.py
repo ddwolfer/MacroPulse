@@ -7,7 +7,8 @@ FRED 經濟數據採集器
 
 import logging
 from typing import List, Optional
-from datetime import datetime, date
+from datetime import datetime
+from datetime import date as date_type
 
 from src.collectors.base_collector import BaseCollector
 from src.schema.models import FREDSeries, FREDObservation
@@ -119,10 +120,10 @@ class FREDCollector(BaseCollector):
                         value = float(value) if value else None
                     
                     observations.append(FREDObservation(
-                        date=date.fromisoformat(obs["date"]),
+                        date=date_type.fromisoformat(obs["date"]),
                         value=value,
-                        realtime_start=date.fromisoformat(obs["realtime_start"]),
-                        realtime_end=date.fromisoformat(obs["realtime_end"])
+                        realtime_start=date_type.fromisoformat(obs["realtime_start"]),
+                        realtime_end=date_type.fromisoformat(obs["realtime_end"])
                     ))
                 except Exception as e:
                     logger.warning(f"解析觀測值失敗：{str(e)}")

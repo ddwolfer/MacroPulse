@@ -7,7 +7,8 @@
 
 import logging
 from typing import List, Optional, Dict
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
+from datetime import date as date_type
 
 import yfinance as yf
 import pandas as pd
@@ -44,6 +45,21 @@ class MarketDataCollector(BaseCollector):
         super().__init__(cache_ttl_hours=0)  # 轉換為分鐘
         # 重新設定緩存 TTL 為分鐘
         self.cache_manager.ttl = timedelta(minutes=settings.yfinance_cache_ttl)
+    
+    async def collect(self) -> dict:
+        """
+        採集所有市場數據（實作抽象方法）
+        
+        Returns:
+            dict: 包含 treasury_yields 和 asset_prices 的字典
+        """
+        treasury_yields = await self.collect_treasury_yields()
+        asset_prices = await self.collect_asset_prices()
+        
+        return {
+            'treasury_yields': treasury_yields,
+            'asset_prices': asset_prices
+        }
     
     async def collect_treasury_yields(self) -> List[TreasuryYield]:
         """

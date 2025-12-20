@@ -139,7 +139,7 @@ class BaseCollector(ABC):
         Returns:
             str: 緩存鍵
         """
-        from datetime import date
-        today = date.today().isoformat()
+        from datetime import date as date_type
+        today = date_type.today().isoformat()
         return f"{identifier}_{today}"
 

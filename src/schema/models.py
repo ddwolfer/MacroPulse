@@ -7,7 +7,8 @@
 
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
-from datetime import datetime, date
+from datetime import datetime
+from datetime import date as date_type
 
 
 # =============================================================================
@@ -55,10 +56,10 @@ class PolymarketMarket(BaseModel):
 
 class FREDObservation(BaseModel):
     """FRED 單一觀測值"""
-    date: date = Field(..., description="觀測日期")
+    date: date_type = Field(..., description="觀測日期")
     value: Optional[float] = Field(None, description="數值（可能為 None，表示缺失）")
-    realtime_start: date = Field(..., description="數據開始日期")
-    realtime_end: date = Field(..., description="數據結束日期")
+    realtime_start: date_type = Field(..., description="數據開始日期")
+    realtime_end: date_type = Field(..., description="數據結束日期")
 
 
 class FREDSeries(BaseModel):
@@ -110,7 +111,7 @@ class AssetPriceHistory(BaseModel):
     """資產價格歷史數據（用於計算相關係數）"""
     symbol: str = Field(..., description="資產代碼")
     prices: List[float] = Field(..., min_length=2, description="價格列表")
-    dates: List[date] = Field(..., description="日期列表")
+    dates: List[date_type] = Field(..., description="日期列表")
     
     def calculate_correlation(self, other: "AssetPriceHistory") -> float:
         """

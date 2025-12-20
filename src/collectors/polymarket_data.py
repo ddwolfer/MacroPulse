@@ -93,7 +93,14 @@ class PolymarketCollector(BaseCollector):
         
         try:
             data = response.json()
-            return data.get("data", [])
+            # 處理不同的 API 響應格式
+            if isinstance(data, list):
+                return data
+            elif isinstance(data, dict):
+                return data.get("data", [])
+            else:
+                logger.warning(f"未預期的 API 響應格式：{type(data)}")
+                return []
         except Exception as e:
             logger.error(f"解析 Polymarket API 響應失敗：{str(e)}")
             return []
