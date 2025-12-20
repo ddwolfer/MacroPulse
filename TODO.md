@@ -15,18 +15,27 @@
   - [x] 更新 `AGENT.md` 加入新文件索引
   - [x] 更新所有 `Spec_Agent_*.md` 加入詳細技術規格引用
 
-## 📅 第一階段：環境初始化與專案骨架
+## 📅 第一階段：環境初始化與專案骨架（✅ 已完成）
 
-- [ ] **1.1 專案結構建立**
-  - [ ] 按照 `README_Main_System.md` 建立資料夾結構。
-  - [ ] 建立 `.gitignore` (排除 `__pycache__`, `.env`, `data_cache/`, `outputs/`)。
-- [ ] **1.2 配置管理**
-  - [ ] 參考 `SPEC_Configuration.md` 建立 `config.py` 使用 `pydantic-settings` 管理配置。
-  - [ ] 參考 `SPEC_Configuration.md` 準備 `.env.example` 範本檔案。
-  - [ ] 驗證所有必要的 API Key 已設定。
-- [ ] **1.3 核心入口實作**
-  - [ ] 撰寫 `main.py` 的非同步 (async) 執行邏輯。
-  - [ ] 實作基本的日誌 (Logging) 系統。
+- [x] **1.1 專案結構建立**
+  - [x] 按照 `README_Main_System.md` 建立資料夾結構。
+  - [x] 建立 `.gitignore` (排除 `__pycache__`, `.env`, `data_cache/`, `outputs/`)。
+  - [x] 建立所有必要的 `__init__.py` 檔案。
+- [x] **1.2 配置管理**
+  - [x] 參考 `SPEC_Configuration.md` 建立 `config.py` 使用 `pydantic-settings` 管理配置。
+  - [x] 參考 `SPEC_Configuration.md` 準備 `.env.example` 範本檔案。
+  - [x] 實作配置驗證函數 `validate_config()`。
+  - [x] 實作目錄初始化 `ensure_directories()`。
+- [x] **1.3 核心入口實作**
+  - [x] 撰寫 `main.py` 的非同步 (async) 執行邏輯。
+  - [x] 實作基本的日誌 (Logging) 系統 (`src/utils/logger.py`)。
+  - [x] 實作格式化工具 (`src/utils/formatters.py`)。
+  - [x] 實作緩存管理器 (`src/utils/cache.py`)。
+- [x] **1.4 依賴管理**
+  - [x] 建立 `requirements.txt`。
+  - [x] 建立 `pyproject.toml`。
+- [x] **1.5 文件更新**
+  - [x] 更新 `README.md` 為完整的專案介紹。
 
 ## 📊 第二階段：數據採集器 (Collectors) 實作
 

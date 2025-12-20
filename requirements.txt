@@ -1,0 +1,32 @@
+# Core Dependencies
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# HTTP Requests
+httpx>=0.25.0
+
+# Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Financial Data
+yfinance>=0.2.0
+
+# Google Gemini API (Primary)
+google-generativeai>=0.3.0
+
+# OpenAI API (Optional/Backup)
+openai>=1.0.0
+
+# Date/Time
+python-dateutil>=2.8.0
+
+# Testing (Optional)
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+
+# Code Quality (Optional)
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.5.0
+

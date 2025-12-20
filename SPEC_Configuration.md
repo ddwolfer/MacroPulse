@@ -12,19 +12,19 @@
 # ============================================
 # LLM API Keys
 # ============================================
-# OpenAI API (用於 Agent 分析)
+# Google Gemini API (主要使用)
+GEMINI_API_KEY=your-gemini-api-key
+
+# OpenAI API (備選)
 OPENAI_API_KEY=sk-...
 
-# 或使用 Gemini API
-GEMINI_API_KEY=...
-
-# LLM 提供商選擇: "openai" 或 "gemini"
-LLM_PROVIDER=openai
+# LLM 提供商選擇: "gemini" 或 "openai"
+LLM_PROVIDER=gemini
 
 # LLM 模型選擇
+# Gemini: "gemini-flash-latest", "gemini-pro", "gemini-pro-vision"
 # OpenAI: "gpt-4", "gpt-4-turbo-preview", "gpt-3.5-turbo"
-# Gemini: "gemini-pro", "gemini-pro-vision"
-LLM_MODEL=gpt-4
+LLM_MODEL=gemini-flash-latest
 
 # ============================================
 # 經濟數據 API
@@ -119,10 +119,10 @@ class Settings(BaseSettings):
     """應用程式配置"""
     
     # LLM 配置
-    openai_api_key: Optional[str] = Field(None, env="OPENAI_API_KEY")
     gemini_api_key: Optional[str] = Field(None, env="GEMINI_API_KEY")
-    llm_provider: str = Field("openai", env="LLM_PROVIDER")
-    llm_model: str = Field("gpt-4", env="LLM_MODEL")
+    openai_api_key: Optional[str] = Field(None, env="OPENAI_API_KEY")
+    llm_provider: str = Field("gemini", env="LLM_PROVIDER")
+    llm_model: str = Field("gemini-flash-latest", env="LLM_MODEL")
     llm_temperature: float = Field(0.3, env="LLM_TEMPERATURE", ge=0.0, le=1.0)
     editor_temperature: float = Field(0.5, env="EDITOR_TEMPERATURE", ge=0.0, le=1.0)
     max_tokens: int = Field(4000, env="MAX_TOKENS", gt=0)
@@ -154,8 +154,8 @@ class Settings(BaseSettings):
     
     @validator("llm_provider")
     def validate_llm_provider(cls, v):
-        if v not in ["openai", "gemini"]:
-            raise ValueError("LLM_PROVIDER 必須是 'openai' 或 'gemini'")
+        if v not in ["gemini", "openai"]:
+            raise ValueError("LLM_PROVIDER 必須是 'gemini' 或 'openai'")
         return v
     
     @validator("log_level")
@@ -206,10 +206,10 @@ def validate_config():
     errors = []
     
     # 驗證 LLM API Key
-    if settings.llm_provider == "openai" and not settings.openai_api_key:
-        errors.append("缺少 OPENAI_API_KEY（當 LLM_PROVIDER=openai 時）")
-    elif settings.llm_provider == "gemini" and not settings.gemini_api_key:
+    if settings.llm_provider == "gemini" and not settings.gemini_api_key:
         errors.append("缺少 GEMINI_API_KEY（當 LLM_PROVIDER=gemini 時）")
+    elif settings.llm_provider == "openai" and not settings.openai_api_key:
+        errors.append("缺少 OPENAI_API_KEY（當 LLM_PROVIDER=openai 時）")
     
     # 驗證 FRED API Key
     if not settings.fred_api_key:
@@ -290,7 +290,7 @@ def sanitize_log_message(message: str) -> str:
 ```bash
 # .env.development
 LOG_LEVEL=DEBUG
-LLM_MODEL=gpt-3.5-turbo  # 使用較便宜的模型
+LLM_MODEL=gemini-flash-latest  # 快速且經濟
 MAX_RETRIES=1  # 快速失敗
 ```
 
@@ -299,7 +299,7 @@ MAX_RETRIES=1  # 快速失敗
 ```bash
 # .env.production
 LOG_LEVEL=INFO
-LLM_MODEL=gpt-4  # 使用高品質模型
+LLM_MODEL=gemini-flash-latest  # 或 gemini-pro（如需更高品質）
 MAX_RETRIES=5  # 更多重試
 FRED_CACHE_TTL=48  # 更長的緩存時間
 ```
