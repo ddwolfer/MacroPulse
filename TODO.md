@@ -79,12 +79,13 @@
   - [x] JSON 解析和修復
   - [x] 錯誤處理和重試機制
   - [x] 輸出驗證（Pydantic）
-- [ ] **3.2 貨幣政策 Agent** (`src/agents/fed_agent.py`)
-  - [ ] 參考 `Spec_Agent_Fed_Watcher.md` 了解角色定位。
-  - [ ] 參考 `SPEC_Prompt_Templates.md` 實作完整的 System Prompt 和 User Prompt。
-  - [ ] 參考 `SPEC_Data_Models.md` 定義 `FedAnalysisOutput` 模型。
-  - [ ] 實作 LLM 呼叫邏輯（參考 `AGENT.md` 的 BaseAgent 模式）。
-  - [ ] 參考 `SPEC_Error_Handling.md` 實作錯誤處理。
+- [x] **3.2 貨幣政策 Agent** (`src/agents/fed_agent.py`)
+  - [x] 參考 `Spec_Agent_Fed_Watcher.md` 了解角色定位。
+  - [x] 參考 `SPEC_Prompt_Templates.md` 實作完整的 System Prompt 和 User Prompt。
+  - [x] 參考 `SPEC_Data_Models.md` 使用 `FedAnalysisOutput` 模型。
+  - [x] 實作 LLM 呼叫邏輯（繼承 BaseAgent）。
+  - [x] 實作殖利率曲線狀態計算
+  - [x] 參考 `SPEC_Error_Handling.md` 實作錯誤處理。
 - [ ] **3.3 經濟指標 Agent** (`src/agents/econ_agent.py`)
   - [ ] 參考 `Spec_Agent_Data_Analyst.md` 了解角色定位。
   - [ ] 參考 `SPEC_Prompt_Templates.md` 實作完整的 Prompt。

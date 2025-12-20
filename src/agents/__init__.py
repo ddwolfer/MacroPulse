@@ -5,8 +5,10 @@
 """
 
 from src.agents.base_agent import BaseAgent, AgentExecutionError
+from src.agents.fed_agent import FedAgent
 
 __all__ = [
     "BaseAgent",
     "AgentExecutionError",
+    "FedAgent",
 ]
