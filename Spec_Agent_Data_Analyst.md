@@ -1,1 +1,31 @@
-Agent 規格書：經濟指標分析師 (The Data Analyst)1. 角色定位模擬一位總體經濟學家，擅長從硬數據（Hard Data）中找出經濟循環的拐點。2. 核心 Input 數據通膨數據： CPI (YoY, MoM), PCE 核心物價指數。就業數據： NFP 非農就業人數、失業率、初請失業金。領先指標： ISM 製造業/服務業 PMI。3. 開發重點 (針對 Cursor)A. 數據抓取 (src/collectors/econ_data.py)建議使用 FRED API (需申請 API Key，免費)。必要代碼：CPIAUCSL (CPI), UNRATE (失業率), PAYEMS (非農)。B. 分析邏輯 (src/agents/econ_agent.py)核心邏輯： 數據是否支持「軟著陸」？對比分析： 將「當前值」與「市場預期值」對比。結構化輸出： 經濟景氣評分 (1-10)、通膨趨勢分析。4. 技術注意事項由於經濟數據發布有特定時間，Agent 應具備「時效性意識」，例如：如果今天是非農公布日，該 Agent 的權重要自動提升。
+# Agent 規格書：經濟指標分析師 (The Data Analyst)
+
+## 1. 角色定位
+
+模擬一位總體經濟學家，擅長從硬數據（Hard Data）中找出經濟循環的拐點。
+
+## 2. 核心 Input 數據
+
+- **通膨數據**：CPI (YoY, MoM), PCE 核心物價指數。
+- **就業數據**：NFP 非農就業人數、失業率、初請失業金。
+- **領先指標**：ISM 製造業/服務業 PMI。
+
+## 3. 開發重點 (針對 Cursor)
+
+### A. 數據抓取 (src/collectors/econ_data.py)
+
+- 建議使用 FRED API (需申請 API Key，免費)。
+- 必要代碼：
+  - `CPIAUCSL` (CPI)
+  - `UNRATE` (失業率)
+  - `PAYEMS` (非農)
+
+### B. 分析邏輯 (src/agents/econ_agent.py)
+
+- **核心邏輯**：數據是否支持「軟著陸」？
+- **對比分析**：將「當前值」與「市場預期值」對比。
+- **結構化輸出**：經濟景氣評分 (1-10)、通膨趨勢分析。
+
+## 4. 技術注意事項
+
+由於經濟數據發布有特定時間，Agent 應具備「時效性意識」，例如：如果今天是非農公布日，該 Agent 的權重要自動提升。
