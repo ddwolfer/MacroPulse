@@ -16,16 +16,28 @@
 
 - 使用 `yfinance` 抓取 `^IRX` (3M Bill), `^FVX` (5Y), `^TNX` (10Y)。
 - 計算「殖利率曲線倒掛」狀況（10Y - 2Y）。
+- **詳細規格**：參考 `SPEC_API_Integrations.md` 的 yfinance 章節
+- **數據模型**：參考 `SPEC_Data_Models.md` 的 `TreasuryYield` 模型
 
 ### B. LLM 分析邏輯 (src/agents/fed_agent.py)
 
+- **完整 Prompt 模板**：參考 `SPEC_Prompt_Templates.md` 的 Fed Agent 章節
 - **System Prompt 要點**：
   - 「你必須專注於聯準會對於『中性利率』的態度。」
   - 「分析市場定價是否過於樂觀（例如：Polymarket 預期降息 3 次，但官員暗示只會降 1 次）。」
-- **輸出結構 (Schema)**：
+- **輸出結構 (Schema)**：參考 `SPEC_Data_Models.md` 的 `FedAnalysisOutput` 模型
   - `tone_index`: (Float, -1.0 到 1.0, -1 代表極鴿, 1 代表極鷹)
-  - `key_risks`: 列表
+  - `key_risks`: 列表（3-5 個）
   - `summary`: 200 字以內的專業解讀
+  - `confidence`: 信心指數 (0.0-1.0)
+  - `yield_curve_status`: 殖利率曲線狀態
+  - `next_fomc_probability`: 下次 FOMC 降息機率（可選）
+
+### C. 錯誤處理
+
+- **錯誤處理策略**：參考 `SPEC_Error_Handling.md`
+- 如果數據獲取失敗，使用緩存數據（如果存在）
+- 如果 LLM 分析失敗，返回空結構，不中斷整體流程
 
 ## 4. 期待產出範例
 

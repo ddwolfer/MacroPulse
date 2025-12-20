@@ -11,6 +11,7 @@
 | 檔案 | 用途 | 何時查看 |
 |------|------|----------|
 | `README_Main_System.md` | 專案總覽、系統架構、數據流向總圖 | 初次接觸專案或修改整體架構時 |
+| `SPEC_Project_Assessment.md` | 專案文件完整性評估報告 | 了解文件結構和開發優先順序 |
 | `TODO.md` | 當前開發進度、優先級、已完成功能 | 每次開始新任務前，需更新狀態 |
 | `config.py` | 核心配置、API 金鑰管理、路徑定義 | 需要新增 API 或修改全域設定時 |
 
@@ -24,11 +25,51 @@
 | `Spec_Agent_Correlation_Expert.md` | 資產連動與持倉分析 | 跨資產相關係數、持倉曝險分析 |
 | `Spec_Agent_Editor_In_Chief.md` | 報告總結與邏輯審核 | 矛盾檢測、專業投研風格撰寫 |
 
-### 開發輔助
+### 技術規格文件（開發必讀）
 
 | 檔案 | 用途 | 何時查看 |
 |------|------|----------|
-| `error_log.md` | 已解決的技術問題與 API 陷阱記錄 | 遇到 API 連線或 LLM 解析錯誤時 |
+| `SPEC_API_Integrations.md` | API 端點、參數、認證、錯誤處理 | 開發 Collectors 時 |
+| `SPEC_Data_Models.md` | 所有 Pydantic 模型的完整定義 | 定義數據結構時 |
+| `SPEC_Prompt_Templates.md` | 所有 Agent 的完整 Prompt 模板 | 開發 Agent 分析邏輯時 |
+| `SPEC_Configuration.md` | 環境變數、配置管理、.env 範本 | 設定專案環境時 |
+| `SPEC_Error_Handling.md` | 錯誤處理、重試機制、降級策略 | 實作錯誤處理時 |
+
+### 開發輔助（除錯必看）
+
+| 檔案 | 用途 | 何時查看 |
+|------|------|----------|
+| `error_log.md` | 已解決的技術問題、根本原因分析 (Root Cause Analysis)、API 陷阱記錄 | 遇到類似錯誤時、解決問題後記錄 |
+
+---
+
+## 📖 文件閱讀順序建議
+
+### 初次接觸專案
+1. `README_Main_System.md` - 了解專案整體架構
+2. `SPEC_Project_Assessment.md` - 了解文件結構
+3. `AGENT.md` - 了解開發規範
+
+### 開始開發前
+1. `SPEC_Configuration.md` - 設定環境和配置
+2. `SPEC_API_Integrations.md` - 了解 API 規格
+3. `SPEC_Data_Models.md` - 了解數據結構
+
+### 開發 Collectors 時
+1. `SPEC_API_Integrations.md` - API 詳細規格
+2. `SPEC_Data_Models.md` - Collector 層數據模型
+3. `SPEC_Error_Handling.md` - 錯誤處理和緩存
+
+### 開發 Agent 時
+1. `Spec_Agent_*.md` - Agent 角色定位和邏輯
+2. `SPEC_Prompt_Templates.md` - 完整的 Prompt 模板
+3. `SPEC_Data_Models.md` - Agent 輸出模型
+4. `SPEC_Error_Handling.md` - Agent 錯誤處理
+
+### 遇到錯誤時
+1. `error_log.md` - 檢查是否有類似問題的解決方案
+2. `SPEC_Error_Handling.md` - 了解錯誤處理策略和降級機制
+3. 相關的 API 或 Agent 規格文件 - 確認實作是否符合規格
 
 ## 💻 代碼風格規範
 
@@ -129,9 +170,16 @@ macro-daily-robot/
 
 ### 遇到錯誤時
 
-1. **檢查日誌**：查看控制台輸出的異常堆棧。
-2. **更新 error_log.md**：記錄錯誤現象、原因（如 API Rate Limit）及解決方案。
-3. **實作降級**：確保即使某個 Agent 失敗，整體報告仍能生成（優雅降級）。
+1. **查看 `error_log.md`**：先檢查是否有類似問題的解決方案，避免重複踩坑。
+2. **檢查日誌**：查看控制台輸出的異常堆棧，定位錯誤發生位置。
+3. **分析根本原因**：不只是修復錯誤，要理解「為什麼」會發生（技術層面）。
+4. **解決問題**：實作修復方案，參考 `SPEC_Error_Handling.md` 的錯誤處理策略。
+5. **更新 `error_log.md`**：記錄以下內容：
+   - **錯誤訊息**：簡述或複製關鍵錯誤 log
+   - **根本原因 (Root Cause)**：解釋為什麼會發生（技術層面）
+   - **解決方案**：你做了什麼修正
+   - **學習點**：這個錯誤帶來的知識或經驗
+6. **實作降級**：確保即使某個 Agent 失敗，整體報告仍能生成（優雅降級）。
 
 ## 📝 Git Commit 規範 (繁體中文)
 
@@ -186,6 +234,23 @@ async def test_agent_output():
     assert isinstance(result, AnalysisSchema)
     print("✅ 分析模型驗證通過")
 ```
+
+## 🤖 AI 協作提示
+
+### 開始新任務時
+1. **閱讀 `TODO.md`**：了解當前優先級和待辦事項
+2. **查看相關規格文件**：根據任務類型閱讀對應的 `Spec_Agent_*.md` 或 `SPEC_*.md`
+3. **檢查 `error_log.md`**：避免重複已知問題，學習過往經驗
+
+### 完成任務後
+1. **更新 `TODO.md`**：標記任務完成狀態
+2. **如果遇到錯誤**：必須更新 `error_log.md`，記錄錯誤、根本原因、解決方案和學習點
+3. **撰寫清晰的 commit message**：遵循 Git Commit 規範
+
+### 解決問題時
+- 優先查看 `error_log.md` 是否有類似案例
+- 參考 `SPEC_Error_Handling.md` 的錯誤處理策略
+- 記錄解決過程到 `error_log.md`，幫助未來的開發者
 
 ## 📌 環境工具速查
 
