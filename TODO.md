@@ -86,11 +86,11 @@
   - [x] 實作 LLM 呼叫邏輯（繼承 BaseAgent）。
   - [x] 實作殖利率曲線狀態計算
   - [x] 參考 `SPEC_Error_Handling.md` 實作錯誤處理。
-- [ ] **3.3 經濟指標 Agent** (`src/agents/econ_agent.py`)
-  - [ ] 參考 `Spec_Agent_Data_Analyst.md` 了解角色定位。
-  - [ ] 參考 `SPEC_Prompt_Templates.md` 實作完整的 Prompt。
-  - [ ] 參考 `SPEC_Data_Models.md` 定義 `EconomicAnalysisOutput` 模型。
-  - [ ] 實作軟著陸評分邏輯。
+- [x] **3.3 經濟指標 Agent** (`src/agents/econ_agent.py`)
+  - [x] 參考 `Spec_Agent_Data_Analyst.md` 了解角色定位。
+  - [x] 參考 `SPEC_Prompt_Templates.md` 實作完整的 Prompt。
+  - [x] 參考 `SPEC_Data_Models.md` 定義 `EconomicAnalysisOutput` 模型。
+  - [x] 實作軟著陸評分邏輯。
 - [ ] **3.4 預測市場 Agent** (`src/agents/sentiment_agent.py`)
   - [ ] 參考 `Spec_Agent_Prediction_Specialist.md` 了解角色定位。
   - [ ] 參考 `SPEC_Prompt_Templates.md` 實作完整的 Prompt。

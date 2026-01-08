@@ -6,9 +6,11 @@
 
 from src.agents.base_agent import BaseAgent, AgentExecutionError
 from src.agents.fed_agent import FedAgent
+from src.agents.econ_agent import EconAgent
 
 __all__ = [
     "BaseAgent",
     "AgentExecutionError",
     "FedAgent",
+    "EconAgent",
 ]
