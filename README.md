@@ -106,24 +106,31 @@ python main.py
 - [x] 基礎工具模組 (`logger`, `formatters`, `cache`)
 - [x] 主程式骨架 (`main.py`)
 
-### 🚧 Phase 2：數據採集器（進行中）
+### ✅ Phase 2：數據採集器（已完成）
 
-- [ ] Polymarket 採集器
-- [ ] FRED 採集器
-- [ ] yfinance 採集器
-- [ ] 緩存機制整合
+- [x] Polymarket 採集器 - Gamma API 預測市場數據
+- [x] FRED 採集器 - 經濟指標數據（CPI, 失業率, NFP, PCE）
+- [x] yfinance 採集器 - 美債殖利率、資產價格
+- [x] 緩存機制整合（指數退避重試）
 
-### ⏳ Phase 3：專業 Agent
+### ✅ Phase 3：專業分析 Agent（已完成）
 
-- [ ] FedAgent（貨幣政策）
-- [ ] EconomicAgent（經濟指標）
-- [ ] PredictionAgent（預測市場）
-- [ ] CorrelationAgent（資產連動）
+- [x] **BaseAgent** - 基礎 Agent 類別，支援 Gemini API
+- [x] **FedAgent** - 貨幣政策分析（殖利率曲線、鷹/鴿指數）
+- [x] **EconAgent** - 經濟指標分析（軟著陸評分 0-10）
+- [x] **SentimentAgent** - 預測市場情緒分析（市場焦慮度）
+- [x] **CorrelationAgent** - 資產連動分析（相關係數、持倉風險）
 
-### ⏳ Phase 4：報告生成
+### 🚧 Phase 4：報告生成（進行中）
 
-- [ ] EditorAgent（報告總結）
-- [ ] Markdown 格式化
+- [ ] EditorAgent（報告總結與矛盾檢測）
+- [ ] Markdown 格式化輸出
+
+### ⏳ Phase 5：優化與自動化
+
+- [ ] 優雅降級策略
+- [ ] 定時執行設定
+- [ ] 效能優化
 
 詳細進度請查看 [TODO.md](TODO.md)
 
@@ -178,6 +185,6 @@ MacroPulse Team
 
 ---
 
-**版本**：v0.1.0  
-**狀態**：開發中  
-**最後更新**：2024-12-20
+**版本**：v0.3.0  
+**狀態**：開發中（Phase 3 完成）  
+**最後更新**：2026-01-09
