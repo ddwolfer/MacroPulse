@@ -91,11 +91,11 @@
   - [x] 參考 `SPEC_Prompt_Templates.md` 實作完整的 Prompt。
   - [x] 參考 `SPEC_Data_Models.md` 定義 `EconomicAnalysisOutput` 模型。
   - [x] 實作軟著陸評分邏輯。
-- [ ] **3.4 預測市場 Agent** (`src/agents/sentiment_agent.py`)
-  - [ ] 參考 `Spec_Agent_Prediction_Specialist.md` 了解角色定位。
-  - [ ] 參考 `SPEC_Prompt_Templates.md` 實作完整的 Prompt。
-  - [ ] 參考 `SPEC_Data_Models.md` 定義 `PredictionAnalysisOutput` 模型。
-  - [ ] 實作市場焦慮度量化邏輯。
+- [x] **3.4 預測市場 Agent** (`src/agents/sentiment_agent.py`)
+  - [x] 參考 `Spec_Agent_Prediction_Specialist.md` 了解角色定位。
+  - [x] 參考 `SPEC_Prompt_Templates.md` 實作完整的 Prompt。
+  - [x] 參考 `SPEC_Data_Models.md` 定義 `PredictionAnalysisOutput` 模型。
+  - [x] 實作市場焦慮度量化邏輯。
 - [ ] **3.5 資產連動 Agent** (`src/agents/correlation_agent.py`)
   - [ ] 參考 `Spec_Agent_Correlation_Expert.md` 了解角色定位。
   - [ ] 參考 `SPEC_Prompt_Templates.md` 實作完整的 Prompt。
