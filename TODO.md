@@ -111,11 +111,12 @@
   - [x] `test_scripts/test_sentiment_agent.py` - Sentiment Agent 完整測試
   - [x] `test_scripts/verify_correlation_agent.py` - Correlation Agent 快速驗證
   - [x] `test_scripts/test_correlation_agent.py` - Correlation Agent 完整測試
-- [ ] **3.7 主程式整合**
-  - [ ] 更新 `main.py` 的 `run_analysis()` 函數整合所有 Agent
-  - [ ] 實作並行 Agent 分析（asyncio.gather）
-  - [ ] 實作優雅降級（單一 Agent 失敗不中斷整體流程）
-  - [ ] 更新錯誤處理和日誌記錄
+- [x] **3.7 主程式整合**
+  - [x] 更新 `main.py` 的 `run_analysis()` 函數整合所有 Agent
+  - [x] 實作並行 Agent 分析（asyncio.gather）
+  - [x] 實作優雅降級（單一 Agent 失敗不中斷整體流程）
+  - [x] 更新錯誤處理和日誌記錄
+  - [x] `test_scripts/verify_main_integration.py` - 主程式整合驗證
 
 ## ✍️ 第四階段：總結與報告生成 (Editor)
 
