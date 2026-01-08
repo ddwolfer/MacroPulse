@@ -70,7 +70,7 @@
   - [x] 並行採集（asyncio.gather）
   - [x] 異常處理和降級
 
-## 🧠 第三階段：專業分析 Agent 實作
+## 🧠 第三階段：專業分析 Agent 實作（✅ 已完成）
 
 - [x] **3.1 基礎 Agent 類別** (`src/agents/base_agent.py`)
   - [x] 定義所有 Agent 的共同介面與 LLM 呼叫邏輯。
@@ -102,6 +102,20 @@
   - [x] 參考 `SPEC_Data_Models.md` 定義 `CorrelationAnalysisOutput` 模型。
   - [x] 實作相關係數計算和風險預警邏輯。
   - [x] 加入用戶自定義持倉標的的分析邏輯（參考 `SPEC_Configuration.md` 的 `USER_PORTFOLIO`）。
+- [x] **3.6 測試腳本**
+  - [x] `test_scripts/verify_fed_agent.py` - Fed Agent 快速驗證
+  - [x] `test_scripts/test_fed_agent.py` - Fed Agent 完整測試
+  - [x] `test_scripts/verify_econ_agent.py` - Economic Agent 快速驗證
+  - [x] `test_scripts/test_econ_agent.py` - Economic Agent 完整測試
+  - [x] `test_scripts/verify_sentiment_agent.py` - Sentiment Agent 快速驗證
+  - [x] `test_scripts/test_sentiment_agent.py` - Sentiment Agent 完整測試
+  - [x] `test_scripts/verify_correlation_agent.py` - Correlation Agent 快速驗證
+  - [x] `test_scripts/test_correlation_agent.py` - Correlation Agent 完整測試
+- [ ] **3.7 主程式整合**
+  - [ ] 更新 `main.py` 的 `run_analysis()` 函數整合所有 Agent
+  - [ ] 實作並行 Agent 分析（asyncio.gather）
+  - [ ] 實作優雅降級（單一 Agent 失敗不中斷整體流程）
+  - [ ] 更新錯誤處理和日誌記錄
 
 ## ✍️ 第四階段：總結與報告生成 (Editor)
 
@@ -116,15 +130,21 @@
   - [ ] 確保最終輸出符合美觀的 Markdown 排版（包含表格與標題）。
   - [ ] 實作報告檔案命名規則（例如：`report_YYYY-MM-DD_HH-MM.md`）。
 
-## 🚀 第五階段：優化與自動化
+## 🚀 第五階段：優化與自動化（部分完成）
 
 - [ ] **5.1 錯誤處理與重試機制**
-  - [ ] 參考 `SPEC_Error_Handling.md` 實作指數退避 (Exponential Backoff) 重試。
+  - [x] 參考 `SPEC_Error_Handling.md` 實作指數退避 (Exponential Backoff) 重試。
+    - [x] `BaseCollector._retry_with_exponential_backoff()` 已實作
+    - [x] `BaseAgent._call_llm_with_retry()` 已實作
   - [ ] 實作優雅降級策略（Agent 失敗時不中斷整體流程）。
-  - [ ] 實作錯誤日誌記錄和統計。
+  - [x] 實作錯誤日誌記錄和統計。
+    - [x] 所有 Collector 和 Agent 都有完整的錯誤日誌
 - [ ] **5.2 定時執行設定**
   - [ ] 設定本地 Cron job 或 GitHub Actions 自動運行腳本。
-- [ ] **5.3 效能優化**
-  - [ ] 確保所有 I/O 密集型任務皆為非同步執行。
+- [x] **5.3 效能優化**
+  - [x] 確保所有 I/O 密集型任務皆為非同步執行。
+    - [x] 所有 Collector 使用 `async/await`（`BaseCollector.fetch_with_retry()`）
+    - [x] 所有 Agent 使用 `async/await`（`BaseAgent.analyze()`）
+    - [x] `main.py` 使用 `asyncio.gather()` 並行採集數據
 - [ ] **5.4 (進階) 視覺化擴充**
   - [ ] 考慮產出簡單的趨勢圖表並嵌入 Markdown。
