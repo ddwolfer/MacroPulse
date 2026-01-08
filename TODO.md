@@ -96,12 +96,12 @@
   - [x] 參考 `SPEC_Prompt_Templates.md` 實作完整的 Prompt。
   - [x] 參考 `SPEC_Data_Models.md` 定義 `PredictionAnalysisOutput` 模型。
   - [x] 實作市場焦慮度量化邏輯。
-- [ ] **3.5 資產連動 Agent** (`src/agents/correlation_agent.py`)
-  - [ ] 參考 `Spec_Agent_Correlation_Expert.md` 了解角色定位。
-  - [ ] 參考 `SPEC_Prompt_Templates.md` 實作完整的 Prompt。
-  - [ ] 參考 `SPEC_Data_Models.md` 定義 `CorrelationAnalysisOutput` 模型。
-  - [ ] 實作相關係數計算和風險預警邏輯。
-  - [ ] 加入用戶自定義持倉標的的分析邏輯（參考 `SPEC_Configuration.md` 的 `USER_PORTFOLIO`）。
+- [x] **3.5 資產連動 Agent** (`src/agents/correlation_agent.py`)
+  - [x] 參考 `Spec_Agent_Correlation_Expert.md` 了解角色定位。
+  - [x] 參考 `SPEC_Prompt_Templates.md` 實作完整的 Prompt。
+  - [x] 參考 `SPEC_Data_Models.md` 定義 `CorrelationAnalysisOutput` 模型。
+  - [x] 實作相關係數計算和風險預警邏輯。
+  - [x] 加入用戶自定義持倉標的的分析邏輯（參考 `SPEC_Configuration.md` 的 `USER_PORTFOLIO`）。
 
 ## ✍️ 第四階段：總結與報告生成 (Editor)
 

@@ -8,6 +8,7 @@ from src.agents.base_agent import BaseAgent, AgentExecutionError
 from src.agents.fed_agent import FedAgent
 from src.agents.econ_agent import EconAgent
 from src.agents.sentiment_agent import SentimentAgent
+from src.agents.correlation_agent import CorrelationAgent
 
 __all__ = [
     "BaseAgent",
@@ -15,4 +16,5 @@ __all__ = [
     "FedAgent",
     "EconAgent",
     "SentimentAgent",
+    "CorrelationAgent",
 ]
