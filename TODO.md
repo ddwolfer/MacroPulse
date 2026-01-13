@@ -118,26 +118,32 @@
   - [x] 更新錯誤處理和日誌記錄
   - [x] `test_scripts/verify_main_integration.py` - 主程式整合驗證
 
-## ✍️ 第四階段：總結與報告生成 (Editor)
+## ✍️ 第四階段：總結與報告生成 (Editor)（✅ 已完成）
 
-- [ ] **4.1 主編 Agent 實作** (`src/agents/editor_agent.py`)
-  - [ ] 參考 `Spec_Agent_Editor_In_Chief.md` 了解角色定位。
-  - [ ] 參考 `SPEC_Prompt_Templates.md` 實作完整的 Editor Prompt。
-  - [ ] 參考 `SPEC_Data_Models.md` 定義 `FinalReport` 模型。
-  - [ ] 實作多份子報告的整合邏輯。
-  - [ ] 實作「衝突偵測」與「重點提煉」邏輯。
-  - [ ] 實作信心指數計算（所有 Agent 的平均值）。
-- [ ] **4.2 Markdown 格式化器**
-  - [ ] 確保最終輸出符合美觀的 Markdown 排版（包含表格與標題）。
-  - [ ] 實作報告檔案命名規則（例如：`report_YYYY-MM-DD_HH-MM.md`）。
+- [x] **4.1 主編 Agent 實作** (`src/agents/editor_agent.py`)
+  - [x] 參考 `Spec_Agent_Editor_In_Chief.md` 了解角色定位。
+  - [x] 參考 `SPEC_Prompt_Templates.md` 實作完整的 Editor Prompt。
+  - [x] 參考 `SPEC_Data_Models.md` 使用 `FinalReport` 模型。
+  - [x] 實作多份子報告的整合邏輯。
+  - [x] 實作「衝突偵測」與「重點提煉」邏輯。
+  - [x] 實作信心指數計算（所有 Agent 的平均值）。
+  - [x] 實作錯誤報告生成（所有 Agent 失敗時的降級方案）。
+- [x] **4.2 Markdown 格式化器**
+  - [x] 確保最終輸出符合美觀的 Markdown 排版（包含表格與標題）。
+  - [x] 實作報告檔案命名規則（`report_YYYY-MM-DD_HH-MM-SS.md`）。
+  - [x] 實作備用報告格式（Editor Agent 失敗時的降級方案）。
+- [x] **4.3 測試腳本**
+  - [x] `test_scripts/verify_editor_agent.py` - Editor Agent 完整驗證
 
-## 🚀 第五階段：優化與自動化（部分完成）
+## 🚀 第五階段：優化與自動化
 
-- [ ] **5.1 錯誤處理與重試機制**
+- [x] **5.1 錯誤處理與重試機制**
   - [x] 參考 `SPEC_Error_Handling.md` 實作指數退避 (Exponential Backoff) 重試。
     - [x] `BaseCollector._retry_with_exponential_backoff()` 已實作
     - [x] `BaseAgent._call_llm_with_retry()` 已實作
-  - [ ] 實作優雅降級策略（Agent 失敗時不中斷整體流程）。
+  - [x] 實作優雅降級策略（Agent 失敗時不中斷整體流程）。
+    - [x] Phase 3.7 已在 `main.py` 的 `run_analysis()` 中實作 `safe_analyze()` 包裝器
+    - [x] 使用 `asyncio.gather(return_exceptions=True)` 確保單一 Agent 失敗不中斷流程
   - [x] 實作錯誤日誌記錄和統計。
     - [x] 所有 Collector 和 Agent 都有完整的錯誤日誌
 - [ ] **5.2 定時執行設定**

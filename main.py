@@ -278,7 +278,6 @@ async def generate_report(analysis_results: dict):
     報告生成階段
     
     由 Editor Agent 整合所有分析結果，生成最終報告。
-    目前使用臨時報告生成邏輯，待 Phase 4 實作 Editor Agent。
     
     Args:
         analysis_results: 各 Agent 的分析結果
@@ -287,13 +286,10 @@ async def generate_report(analysis_results: dict):
         str: 報告檔案路徑
     """
     logger.info("=" * 60)
-    logger.info("階段 3：報告生成")
+    logger.info("階段 3：報告生成（Editor Agent）")
     logger.info("=" * 60)
     
-    # TODO: Phase 4 實作 Editor Agent
-    # from src.agents.editor_agent import EditorAgent
-    
-    logger.warning("Editor Agent 尚未實作，生成臨時整合報告")
+    from src.agents.editor_agent import EditorAgent
     
     # 生成報告檔案名稱
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -310,11 +306,227 @@ async def generate_report(analysis_results: dict):
     success_count = sum(1 for v in analysis_results.values() if v is not None)
     total_count = len(analysis_results)
     
-    # 生成報告
+    logger.info(f"可用分析報告：{success_count}/{total_count}")
+    
+    # 初始化 Editor Agent
+    editor_agent = EditorAgent()
+    
+    # 準備 Editor Agent 輸入
+    editor_input = {
+        "fed_analysis": fed_analysis,
+        "economic_analysis": economic_analysis,
+        "prediction_analysis": prediction_analysis,
+        "correlation_analysis": correlation_analysis
+    }
+    
+    # 執行 Editor Agent 分析
+    try:
+        final_report = await editor_agent.analyze(editor_input)
+        
+        if final_report:
+            # 生成 Markdown 報告
+            report_content = _format_final_report_to_markdown(
+                final_report, 
+                fed_analysis, 
+                economic_analysis, 
+                prediction_analysis, 
+                correlation_analysis
+            )
+        else:
+            logger.warning("Editor Agent 返回空結果，使用備用報告格式")
+            report_content = _generate_fallback_report(
+                fed_analysis, 
+                economic_analysis, 
+                prediction_analysis, 
+                correlation_analysis
+            )
+            
+    except Exception as e:
+        logger.error(f"Editor Agent 執行失敗：{str(e)}", exc_info=True)
+        logger.info("使用備用報告格式")
+        report_content = _generate_fallback_report(
+            fed_analysis, 
+            economic_analysis, 
+            prediction_analysis, 
+            correlation_analysis
+        )
+    
+    # 寫入報告
+    with open(report_path, 'w', encoding='utf-8') as f:
+        f.write(report_content)
+    
+    logger.info(f"報告已生成：{report_path}")
+    
+    return str(report_path)
+
+
+def _format_final_report_to_markdown(
+    final_report,
+    fed_analysis,
+    economic_analysis,
+    prediction_analysis,
+    correlation_analysis
+) -> str:
+    """
+    將 FinalReport 模型格式化為 Markdown 報告
+    
+    Args:
+        final_report: Editor Agent 生成的 FinalReport
+        fed_analysis: 貨幣政策分析結果
+        economic_analysis: 經濟指標分析結果
+        prediction_analysis: 預測市場分析結果
+        correlation_analysis: 資產連動分析結果
+    
+    Returns:
+        str: Markdown 格式的報告內容
+    """
     report_content = f"""# MacroPulse 總經分析報告
 
+**生成時間**: {format_date(final_report.timestamp, 'long')}  
+**報告版本**: v0.4.0  
+**整體信心指數**: {final_report.confidence_score:.0%}
+
+---
+
+## 📋 TL;DR（三句話總結）
+
+{final_report.tldr}
+
+---
+
+## ✨ 深度亮點
+
+"""
+    
+    # 亮點列表
+    for i, highlight in enumerate(final_report.highlights, 1):
+        report_content += f"{i}. **{highlight}**\n"
+    
+    report_content += "\n---\n\n"
+    
+    # 邏輯衝突（如果存在）
+    if final_report.conflicts:
+        report_content += "## ⚠️ 邏輯衝突與風險提示\n\n"
+        for conflict in final_report.conflicts:
+            report_content += f"- {conflict}\n"
+        report_content += "\n---\n\n"
+    
+    # 投資建議
+    report_content += f"""## 💡 投資建議
+
+{final_report.investment_advice}
+
+---
+
+## 📊 詳細分析報告
+
+"""
+    
+    # === 貨幣政策分析 ===
+    report_content += "### 🏦 貨幣政策分析 (Fed Watcher)\n\n"
+    if fed_analysis:
+        report_content += f"- **鷹/鴿指數**: {fed_analysis.tone_index:.2f} (-1.0 極鴿 ~ 1.0 極鷹)\n"
+        report_content += f"- **殖利率曲線狀態**: {fed_analysis.yield_curve_status}\n"
+        report_content += f"- **信心指數**: {fed_analysis.confidence:.0%}\n"
+        report_content += f"\n**摘要**: {fed_analysis.summary}\n\n"
+        if fed_analysis.key_risks:
+            report_content += "**關鍵風險**:\n"
+            for risk in fed_analysis.key_risks[:3]:
+                report_content += f"- {risk}\n"
+    else:
+        report_content += "_分析未完成（數據不足或 API 錯誤）_\n"
+    report_content += "\n---\n\n"
+    
+    # === 經濟指標分析 ===
+    report_content += "### 📈 經濟指標分析 (Data Analyst)\n\n"
+    if economic_analysis:
+        report_content += f"- **軟著陸評分**: {economic_analysis.soft_landing_score:.1f}/10\n"
+        report_content += f"- **通膨趨勢**: {economic_analysis.inflation_trend}\n"
+        report_content += f"- **就業狀況**: {economic_analysis.employment_status}\n"
+        report_content += f"- **信心指數**: {economic_analysis.confidence:.0%}\n"
+        report_content += f"\n**摘要**: {economic_analysis.summary}\n"
+    else:
+        report_content += "_分析未完成（數據不足或 API 錯誤）_\n"
+    report_content += "\n---\n\n"
+    
+    # === 預測市場分析 ===
+    report_content += "### 🔮 預測市場分析 (Prediction Specialist)\n\n"
+    if prediction_analysis:
+        anxiety_desc = "焦慮" if prediction_analysis.market_anxiety_score > 0.2 else \
+                       "樂觀" if prediction_analysis.market_anxiety_score < -0.2 else "中性"
+        report_content += f"- **市場情緒**: {anxiety_desc} (指數: {prediction_analysis.market_anxiety_score:.2f})\n"
+        report_content += f"- **信心指數**: {prediction_analysis.confidence:.0%}\n"
+        report_content += f"\n**摘要**: {prediction_analysis.summary}\n\n"
+        if prediction_analysis.surprising_markets:
+            report_content += "**值得關注的市場**:\n"
+            for market in prediction_analysis.surprising_markets[:3]:
+                report_content += f"- {market}\n"
+    else:
+        report_content += "_分析未完成（數據不足或 API 錯誤）_\n"
+    report_content += "\n---\n\n"
+    
+    # === 資產連動分析 ===
+    report_content += "### 🔗 資產連動分析 (Correlation Expert)\n\n"
+    if correlation_analysis:
+        report_content += f"- **信心指數**: {correlation_analysis.confidence:.0%}\n"
+        report_content += f"\n**摘要**: {correlation_analysis.summary}\n\n"
+        if correlation_analysis.correlation_matrix:
+            report_content += "**相關係數矩陣**:\n"
+            report_content += "| 資產配對 | 相關係數 |\n"
+            report_content += "|---------|----------|\n"
+            for pair, corr in list(correlation_analysis.correlation_matrix.items())[:5]:
+                report_content += f"| {pair} | {corr:.2f} |\n"
+            report_content += "\n"
+        if correlation_analysis.risk_warnings:
+            report_content += "**風險預警**:\n"
+            for warning in correlation_analysis.risk_warnings[:3]:
+                report_content += f"- {warning}\n"
+    else:
+        report_content += "_分析未完成（數據不足或 API 錯誤）_\n"
+    report_content += "\n---\n\n"
+    
+    # === 免責聲明 ===
+    report_content += """## ⚠️ 免責聲明
+
+本報告由 AI 自動生成，僅供參考，不構成投資建議。投資有風險，決策需謹慎。
+
+---
+
+**MacroPulse** - AI 總經與預測市場分析系統  
+**系統狀態**: Phase 4 完成（Editor Agent 整合完成）
+"""
+    
+    return report_content
+
+
+def _generate_fallback_report(
+    fed_analysis,
+    economic_analysis,
+    prediction_analysis,
+    correlation_analysis
+) -> str:
+    """
+    生成備用報告（當 Editor Agent 失敗時使用）
+    
+    Args:
+        fed_analysis: 貨幣政策分析結果
+        economic_analysis: 經濟指標分析結果
+        prediction_analysis: 預測市場分析結果
+        correlation_analysis: 資產連動分析結果
+    
+    Returns:
+        str: Markdown 格式的備用報告
+    """
+    # 統計成功的分析
+    analyses = [fed_analysis, economic_analysis, prediction_analysis, correlation_analysis]
+    success_count = sum(1 for v in analyses if v is not None)
+    total_count = len(analyses)
+    
+    report_content = f"""# MacroPulse 總經分析報告（備用格式）
+
 **生成時間**: {format_date(datetime.now(), 'long')}  
-**報告版本**: v0.3.0
+**報告版本**: v0.4.0  
+**報告類型**: 備用格式（Editor Agent 整合失敗）
 
 ---
 
@@ -395,16 +607,10 @@ async def generate_report(analysis_results: dict):
 ---
 
 **MacroPulse** - AI 總經與預測市場分析系統  
-**系統狀態**: Phase 3 完成（Agent 整合完成，待 Editor Agent 實作）
+**系統狀態**: Phase 4（備用報告模式）
 """
     
-    # 寫入報告
-    with open(report_path, 'w', encoding='utf-8') as f:
-        f.write(report_content)
-    
-    logger.info(f"報告已生成：{report_path}")
-    
-    return str(report_path)
+    return report_content
 
 
 async def main():
@@ -421,7 +627,7 @@ async def main():
         # 顯示啟動資訊
         logger.info("=" * 60)
         logger.info("MacroPulse - AI 總經與預測市場分析系統")
-        logger.info("版本：v0.3.0")
+        logger.info("版本：v0.4.0")
         logger.info("=" * 60)
         
         # 驗證配置
